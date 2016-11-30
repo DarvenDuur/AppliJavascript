@@ -15,12 +15,10 @@ aside {
 	display: block;
 	background: green;
 	width: auto;
-	height: 96px;
 }
 
 #plateau .case {
 	display: inline-block;
-	width: 96px;
 	height: 100%;
 	background-image: url("img/sol.jpg");
 	background-size: cover;

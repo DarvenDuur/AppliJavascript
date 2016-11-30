@@ -2,6 +2,7 @@
 	var nbObstacle = 8;
 	var nbBonus = 8;
 	var taille = 6;
+	var taillePx = 500; //taille du tableau en px
 
 	class Plateau{
 		constructor(){
@@ -34,10 +35,12 @@
 			for (var i = 0; i < taille; i++) {
 				line=document.createElement("DIV");
 				line.className = "ligne";
+				line.style.height = taillePx/taille+"px";
 				
 				for (var j = 0; j < taille; j++) {
 					cell=document.createElement("DIV");
 					cell.className = "case";
+					cell.style.width = taillePx/taille+"px";
 
 					switch (this.cases[i][j]){
 						case 1: // if the cell contains the hero
@@ -93,7 +96,7 @@
 		aside.appendChild(content);
 
 		var currentAside = document.getElementById("text");
-		currentAside.parentNode.replaceChild(aside, currentAside);// = aside;
+		currentAside.parentNode.replaceChild(aside, currentAside);
 	}
 
 	/** test Plateau.update()
