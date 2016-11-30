@@ -1,0 +1,47 @@
+body {
+	min-width: 600px;
+}
+
+aside {
+	display: inline-block;
+	min-width: 300px;
+}
+
+#plateau {
+	display: inline-block;
+}
+
+#plateau .ligne {
+	display: block;
+	background: green;
+	width: auto;
+	height: 96px;
+}
+
+#plateau .case {
+	display: inline-block;
+	width: 96px;
+	height: 100%;
+	background-image: url("img/sol.jpg");
+	background-size: cover;
+}
+
+#plateau .case div {
+	width: 100%;
+	height: 100%;
+	background-size: 80%;
+	background-position: center;
+	background-repeat: no-repeat;
+}
+#hero {
+	background-image: url("img/hero.png");
+}
+#princesse {
+	background-image: url("img/princess.png");
+}
+.obstacle {
+	background-image: url("img/obstacle.png");
+}
+.bonus {
+	background-image: url("img/bonus.png");
+}
