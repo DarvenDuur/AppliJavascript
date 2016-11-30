@@ -1,6 +1,4 @@
 //(function(){
-	var nbObstacle = 8;
-	var nbBonus = 8;
 	var taille = 6;
 	var taillePx = 500; //taille du tableau en px
 
@@ -16,7 +14,31 @@
 		}
 
 		init(){
+			//Placement de la princesse
+			var ligneP = Math.floor(Math.random() * 7);
+			var colonneP = Math.floor(Math.random() * 7);
+			this.cases[aleaLigne][aleaColonne] = 2;
 
+			//Placement du heros
+			var ligneH = Math.floor(Math.random() * 7);
+			var colonneH = Math.floor(Math.random() * 7);
+			this.cases[aleaLigne][aleaColonne] = 1;
+
+			//Placement des bonus et obtacles
+			for (var i = 0; i < taille; i++) {
+				for (var j = 0; j < taille; j++) {
+					if((i != ligneP && j != colonneP) || (i != ligneH && j != colonneH){
+						var alea = Math.floor(Math.random());
+						if(alea < 0.20){
+							this.cases[i][j] = 4; //Placement des obstacles
+						}
+						else if(alea < 0.45){
+							this.cases[i][j] = 3; //Placement des bonus
+						}
+					}
+					this.cases[i][j] = 0;//valeur va etre 0 pour une case vide, 1 pour un heros, 2 pour une princesse, 3 pour un bonus, 4 pour un obstacle
+				}
+			}
 		}
 
 
