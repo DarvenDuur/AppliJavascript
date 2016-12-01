@@ -20,8 +20,11 @@
 			this.cases[ligneP][colonneP] = 2;
 
 			//Placement du heros
-			var ligneH = Math.floor(Math.random() * taille);
-			var colonneH = Math.floor(Math.random() * taille);
+			var ligneH, colonneH;
+			do {
+				ligneH = Math.floor(Math.random() * taille);
+				colonneH = Math.floor(Math.random() * taille);
+			} while (ligneH==ligneP || colonneH==colonneP);
 			this.cases[ligneH][colonneH] = 1;
 
 			//Placement des bonus et obtacles
