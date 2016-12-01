@@ -15,20 +15,20 @@
 
 		init(){
 			//Placement de la princesse
-			var ligneP = Math.floor(Math.random() * 7);
-			var colonneP = Math.floor(Math.random() * 7);
-			this.cases[aleaLigne][aleaColonne] = 2;
+			var ligneP = Math.floor(Math.random() * taille);
+			var colonneP = Math.floor(Math.random() * taille);
+			this.cases[ligneP][colonneP] = 2;
 
 			//Placement du heros
-			var ligneH = Math.floor(Math.random() * 7);
-			var colonneH = Math.floor(Math.random() * 7);
-			this.cases[aleaLigne][aleaColonne] = 1;
+			var ligneH = Math.floor(Math.random() * taille);
+			var colonneH = Math.floor(Math.random() * taille);
+			this.cases[ligneH][colonneH] = 1;
 
 			//Placement des bonus et obtacles
 			for (var i = 0; i < taille; i++) {
 				for (var j = 0; j < taille; j++) {
-					if((i != ligneP && j != colonneP) || (i != ligneH && j != colonneH){
-						var alea = Math.floor(Math.random());
+					if((i != ligneP && j != colonneP) && (i != ligneH && j != colonneH)) {
+						var alea = Math.random();
 						if(alea < 0.20){
 							this.cases[i][j] = 4; //Placement des obstacles
 						}
@@ -36,7 +36,6 @@
 							this.cases[i][j] = 3; //Placement des bonus
 						}
 					}
-					this.cases[i][j] = 0;//valeur va etre 0 pour une case vide, 1 pour un heros, 2 pour une princesse, 3 pour un bonus, 4 pour un obstacle
 				}
 			}
 		}
@@ -148,7 +147,14 @@
 		setMessage("lol, it's not even funny","blabla blabla blablablabla blabla blablabla blablabla")
 	}
 
-	testUpdate();
+	function testInit() {
+		var plateau = new Plateau();
+		plateau.init();
+
+		plateau.update();
+	}
+
+	testInit();
 	testSetMessage();
 
 
