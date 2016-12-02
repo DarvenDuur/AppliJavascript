@@ -20,17 +20,16 @@
 			this.cases[ligneP][colonneP] = 2;
 
 			//Placement du heros
-			var ligneH, colonneH;
 			do {
-				ligneH = Math.floor(Math.random() * taille);
-				colonneH = Math.floor(Math.random() * taille);
-			} while (ligneH==ligneP || colonneH==colonneP);
-			this.cases[ligneH][colonneH] = 1;
+				this.ligneH = Math.floor(Math.random() * taille);
+				this.colonneH = Math.floor(Math.random() * taille);
+			} while (this.ligneH==ligneP || this.colonneH==colonneP);
+			this.cases[this.ligneH][this.colonneH] = 1;
 
 			//Placement des bonus et obtacles
 			for (var i = 0; i < taille; i++) {
 				for (var j = 0; j < taille; j++) {
-					if((i != ligneP && j != colonneP) && (i != ligneH && j != colonneH)) {
+					if((i != ligneP && j != colonneP) && (i != this.ligneH && j != this.colonneH)) {
 						var alea = Math.random();
 						if(alea < 0.20){
 							this.cases[i][j] = 4; //Placement des obstacles
@@ -104,7 +103,55 @@
 			plateau.parentNode.replaceChild(this.toHtmlNode(), plateau);
 		}
 
+		
 
+		moveLeft(){
+			if(checkMove(this.ligneH, this.colonneH-1)){
+				this.cases[this.ligneH][this.colonneH] = 0;
+				this.cases[this.ligneH][this.colonneH-1] = 1;
+				this.colonneH -= 1;
+			}
+		}
+
+		moveUp() {
+			if(checkMove(this.ligneH-1, this.colonneH)){
+				this.cases[this.ligneH][this.colonneH] = 0;
+				this.cases[this.ligneH-1][this.colonneH] = 1;
+				this.ligneH -= 1;
+			}
+		}
+
+		moveRight() {
+			if(checkMove(this.ligneH, this.colonneH+1)){
+				this.cases[this.ligneH][this.colonneH] = 0;
+				this.cases[this.ligneH][this.colonneH+1] = 1;
+				this.colonneH += 1;
+			}
+		}
+
+		moveDown() {
+			if(checkMove(this.ligneH+1, this.colonneH)){
+				this.cases[this.ligneH][this.colonneH] = 0;
+				this.cases[this.ligneH+1][this.colonneH] = 1;
+				this.colonneH += 1;
+			}
+		}
+
+		checkMove(ligne, colonne) {
+			return this.cases[ligne][colonne] != 4;
+		}
+
+
+	}
+	//invoked on keypress
+	function move(event){
+		var key = event.keyCode;
+		switch(event.keyCode) {
+			case 37: plateau.moveLeft(); break;
+			case 38: plateau.moveUp(); break;
+			case 39: plateau.moveRight(); break;
+			case 40: plateau.moveDown();
+		}
 	}
 
 	function setMessage(titre, contenu) {
@@ -122,6 +169,7 @@
 		var currentAside = document.getElementById("text");
 		currentAside.parentNode.replaceChild(aside, currentAside);
 	}
+
 
 	/** test Plateau.update()
 	 * only for debug use
