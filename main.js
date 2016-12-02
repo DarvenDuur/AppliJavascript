@@ -107,7 +107,7 @@
 		
 
 		moveLeft(){
-			if(this.cases[ligneH][coloneH-1] != 4){
+			if(this.cases[ligneH][coloneH-1] != 4 && colonneH > 0){
 				this.cases[this.ligneH][this.colonneH] = 0;
 				this.cases[this.ligneH][this.colonneH-1] = 1;
 				this.colonneH -= 1;
@@ -116,7 +116,7 @@
 		}
 
 		moveUp() {
-			if(this.cases[ligne-1][colonne] != 4){
+			if(this.cases[ligneH-1][colonneH] != 4 && ligneH > 0){
 				this.cases[this.ligneH][this.colonneH] = 0;
 				this.cases[this.ligneH-1][this.colonneH] = 1;
 				this.ligneH -= 1;
@@ -125,7 +125,7 @@
 		}
 
 		moveRight() {
-			if(this.cases[ligne][colonne+1] != 4){
+			if(this.cases[ligneH][colonneH+1] != 4 && colonneH < taille){
 				this.cases[this.ligneH][this.colonneH] = 0;
 				this.cases[this.ligneH][this.colonneH+1] = 1;
 				this.colonneH += 1;
@@ -134,7 +134,7 @@
 		}
 
 		moveDown() {
-			if(this.cases[ligne+1][colonne] != 4){
+			if(this.cases[ligneH+1][colonneH] != 4 && ligneH < taille){
 				this.cases[this.ligneH][this.colonneH] = 0;
 				this.cases[this.ligneH+1][this.colonneH] = 1;
 				this.colonneH += 1;
