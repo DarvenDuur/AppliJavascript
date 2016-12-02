@@ -1,7 +1,7 @@
-(function(){
+//(function(){
 	var taille = 6;
 	var taillePx = 500; //taille du tableau en px
-	var bonusPoints = 50; //incrément des pionts pour chaque bonnus
+	var points = 0;
 
 	class Plateau{
 		constructor(){
@@ -15,16 +15,12 @@
 		}
 
 		init(){
-			//Initialisation du score
-			this.points = 0;
-
 			//Placement de la princesse
 			var ligneP = Math.floor(Math.random() * taille);
 			var colonneP = Math.floor(Math.random() * taille);
 			this.cases[ligneP][colonneP] = 2;
 
 			//Placement du heros
-			var ligneH, colonneH;
 			do {
 				this.ligneH = Math.floor(Math.random() * taille);
 				this.colonneH = Math.floor(Math.random() * taille);
@@ -111,72 +107,61 @@
 		
 
 		moveLeft(){
-			var ligne = this.ligneH,
-				colonne = this.colonneH;
-			if((colonne-1 > 0) && (this.cases[ligne][colonne-1] != 4)){
-				colonne -= 1;
-				this.mvmtEffect(ligne, colonne);
+			if(this.cases[ligneH][coloneH-1] != 4){
+				this.cases[this.ligneH][this.colonneH] = 0;
+				this.cases[this.ligneH][this.colonneH-1] = 1;
+				this.colonneH -= 1;
 			}
+			mvmtEffect(this.ligneH, this.colonneH);
 		}
 
 		moveUp() {
-			var ligne = this.ligneH,
-				colonne = this.colonneH;
-			if((ligne-1 > 0) && (this.cases[ligne-1][colonne] != 4)){
-				ligne -= 1;
-				this.mvmtEffect(ligne, colonne);
+			if(this.cases[ligne-1][colonne] != 4){
+				this.cases[this.ligneH][this.colonneH] = 0;
+				this.cases[this.ligneH-1][this.colonneH] = 1;
+				this.ligneH -= 1;
 			}
+			mvmtEffect(this.ligneH, this.colonneH);
 		}
 
 		moveRight() {
-			var ligne = this.ligneH,
-				colonne = this.colonneH;
-			if((colonne+1 < taille) && (this.cases[ligne][colonne+1] != 4)){
-				colonne += 1;
-				this.mvmtEffect(ligne, colonne);
+			if(this.cases[ligne][colonne+1] != 4){
+				this.cases[this.ligneH][this.colonneH] = 0;
+				this.cases[this.ligneH][this.colonneH+1] = 1;
+				this.colonneH += 1;
 			}
+			mvmtEffect(this.ligneH, this.colonneH);
 		}
 
 		moveDown() {
-			var ligne = this.ligneH,
-				colonne = this.colonneH;
-			if((ligne+1 < taille) && (this.cases[ligne+1][colonne] != 4)){
-				ligne += 1;
-				this.mvmtEffect(ligne, colonne);
+			if(this.cases[ligne+1][colonne] != 4){
+				this.cases[this.ligneH][this.colonneH] = 0;
+				this.cases[this.ligneH+1][this.colonneH] = 1;
+				this.colonneH += 1;
 			}
+			mvmtEffect(this.ligneH, this.colonneH);
 		}
 
-		mvmtEffect(ligne, colonne){
-			if(this.cases[ligne][colonne] == 2){
-				win();
-			}
-			else {
-				if(this.cases[ligne][colonne] == 3) {
-					this.points += bonusPoints;
-				}
-				if(this.cases[ligne][colonne] == 0)
-				{
-					this.cases[this.ligneH][this.colonneH] = 0;
-					this.cases[ligne][colonne] = 1;
-					this.ligneH = ligne;
-					this.colonneH = colonne;
-				}
-			}
-		}
-
-		//invoked on keypress
-		move(event){
-			switch(event.keyCode) {
-				case 37: moveLeft(); break;
-				case 38: moveUp(); break;
-				case 39: moveRight(); break;
-				case 40: moveDown();
-			}
-		}
 
 	}
+	//invoked on keypress
+	function move(event){
+		switch(event.keyCode) {
+			case 37: plateau.moveLeft(); break;
+			case 38: plateau.moveUp(); break;
+			case 39: plateau.moveRight(); break;
+			case 40: plateau.moveDown();
+		}
+	}
 
-	
+	function mvmtEffect(ligne, colonne){
+		if(plateau[ligne][colonne] == 2){
+			win();
+		}
+		else if(plateau[ligne][colonne] == 3) {
+			points += 50;
+		}
+	}
 
 	function setMessage(titre, contenu) {
 
@@ -193,20 +178,6 @@
 		var currentAside = document.getElementById("text");
 		currentAside.parentNode.replaceChild(aside, currentAside);
 	}
-
-	function win() {
-		setMessage("Vous avez gagné !","Vous avez "+points+" points!")
-	}
-
-
-
-
-
-
-
-
-
-
 
 
 	/** test Plateau.update()
@@ -243,24 +214,10 @@
 		plateau.update();
 	}
 
-	function testMove() {
-		var plateau = new Plateau();
-		plateau.init()
-
-		plateau.update();
-
-		console.log(plateau.ligneH,plateau.colonneH);
-		plateau.moveRight();
-		console.log(plateau.ligneH,plateau.colonneH);
-		plateau.moveUp();
-		console.log(plateau.ligneH,plateau.colonneH);
-
-		plateau.update();
-	}	
-
-	testMove();
+	testInit();
+	testSetMessage();
 
 
 
 
-})();
+//})();
