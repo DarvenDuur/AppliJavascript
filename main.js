@@ -1,6 +1,7 @@
 //(function(){
 	var taille = 6;
 	var taillePx = 500; //taille du tableau en px
+	var points = 0;
 
 	class Plateau{
 		constructor(){
@@ -106,51 +107,59 @@
 		
 
 		moveLeft(){
-			if(checkMove(this.ligneH, this.colonneH-1)){
+			if(this.cases[ligneH][coloneH-1] != 4){
 				this.cases[this.ligneH][this.colonneH] = 0;
 				this.cases[this.ligneH][this.colonneH-1] = 1;
 				this.colonneH -= 1;
 			}
+			mvmtEffect(this.ligneH, this.colonneH);
 		}
 
 		moveUp() {
-			if(checkMove(this.ligneH-1, this.colonneH)){
+			if(this.cases[ligne-1][colonne] != 4){
 				this.cases[this.ligneH][this.colonneH] = 0;
 				this.cases[this.ligneH-1][this.colonneH] = 1;
 				this.ligneH -= 1;
 			}
+			mvmtEffect(this.ligneH, this.colonneH);
 		}
 
 		moveRight() {
-			if(checkMove(this.ligneH, this.colonneH+1)){
+			if(this.cases[ligne][colonne+1] != 4){
 				this.cases[this.ligneH][this.colonneH] = 0;
 				this.cases[this.ligneH][this.colonneH+1] = 1;
 				this.colonneH += 1;
 			}
+			mvmtEffect(this.ligneH, this.colonneH);
 		}
 
 		moveDown() {
-			if(checkMove(this.ligneH+1, this.colonneH)){
+			if(this.cases[ligne+1][colonne] != 4){
 				this.cases[this.ligneH][this.colonneH] = 0;
 				this.cases[this.ligneH+1][this.colonneH] = 1;
 				this.colonneH += 1;
 			}
-		}
-
-		checkMove(ligne, colonne) {
-			return this.cases[ligne][colonne] != 4;
+			mvmtEffect(this.ligneH, this.colonneH);
 		}
 
 
 	}
 	//invoked on keypress
 	function move(event){
-		var key = event.keyCode;
 		switch(event.keyCode) {
 			case 37: plateau.moveLeft(); break;
 			case 38: plateau.moveUp(); break;
 			case 39: plateau.moveRight(); break;
 			case 40: plateau.moveDown();
+		}
+	}
+
+	function mvmtEffect(ligne, colonne){
+		if(plateau[ligne][colonne] == 2){
+			win();
+		}
+		else if(plateau[ligne][colonne] == 3) {
+			points += 50;
 		}
 	}
 
