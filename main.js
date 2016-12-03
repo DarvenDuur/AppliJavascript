@@ -107,7 +107,7 @@
 		
 
 		moveLeft(){
-			if(colonneH>0 && this.cases[ligneH][coloneH-1] != 4){
+			if(colonneH > 0 && this.cases[ligneH][coloneH-1] != 4){
 				mvmtEffect(this.ligneH, this.colonneH-1);
 				this.cases[this.ligneH][this.colonneH] = 0;
 				this.cases[this.ligneH][this.colonneH-1] = 1;
@@ -117,7 +117,7 @@
 
 		moveUp() {
 			if(ligneH > 0 && this.cases[ligneH-1][colonneH] != 4){
-				mvmtEffect(this.ligneH, this.colonneH);
+				mvmtEffect(this.ligneH-1, this.colonneH);
 				this.cases[this.ligneH][this.colonneH] = 0;
 				this.cases[this.ligneH-1][this.colonneH] = 1;
 				this.ligneH -= 1;
@@ -127,7 +127,7 @@
 
 		moveRight() {
 			if(colonneH < taille && this.cases[ligneH][colonneH+1] != 4){
-				mvmtEffect(this.ligneH, this.colonneH);
+				mvmtEffect(this.ligneH, this.colonneH+1);
 				this.cases[this.ligneH][this.colonneH] = 0;
 				this.cases[this.ligneH][this.colonneH+1] = 1;
 				this.colonneH += 1;
@@ -136,7 +136,7 @@
 
 		moveDown() {
 			if(ligneH < taille && this.cases[ligneH+1][colonneH] != 4){
-				mvmtEffect(this.ligneH, this.colonneH);
+				mvmtEffect(this.ligneH+1, this.colonneH);
 				this.cases[this.ligneH][this.colonneH] = 0;
 				this.cases[this.ligneH+1][this.colonneH] = 1;
 				this.colonneH += 1;
