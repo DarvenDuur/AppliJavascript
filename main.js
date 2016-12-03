@@ -13,8 +13,19 @@
 				}
 			}
 		}
+		
+		//clear table and refill it
+		resetCases(){
+			for (var i = 0; i < taille; i++) {
+				this.cases[i]=new Array();
+				for (var j = 0; j < taille; j++) {
+					this.cases[i][j]=0;
+				}
+			}
+			this.init();
+		}
 
-		init(){
+		init(){			
 			//Placement de la princesse
 			var ligneP = Math.floor(Math.random() * taille);
 			var colonneP = Math.floor(Math.random() * taille);
@@ -104,11 +115,18 @@
 			plateau.parentNode.replaceChild(this.toHtmlNode(), plateau);
 		}
 
-		
+		mvmtEffect(ligne, colonne){
+			if(this.cases[ligne][colonne] == 2){
+				win();
+			}
+			else if(this.cases[ligne][colonne] == 3) {
+				points += 50;
+			}
+		}
 
 		moveLeft(){
-			if(colonneH > 0 && this.cases[ligneH][coloneH-1] != 4){
-				mvmtEffect(this.ligneH, this.colonneH-1);
+			if(this.colonneH > 0 && this.cases[this.ligneH][this.colonneH-1] != 4){
+				this.mvmtEffect(this.ligneH, this.colonneH-1);
 				this.cases[this.ligneH][this.colonneH] = 0;
 				this.cases[this.ligneH][this.colonneH-1] = 1;
 				this.colonneH -= 1;
@@ -116,18 +134,17 @@
 		}
 
 		moveUp() {
-			if(ligneH > 0 && this.cases[ligneH-1][colonneH] != 4){
-				mvmtEffect(this.ligneH-1, this.colonneH);
+			if(this.ligneH > 0 && this.cases[this.ligneH-1][this.colonneH] != 4){
+				this.mvmtEffect(this.ligneH-1, this.colonneH);
 				this.cases[this.ligneH][this.colonneH] = 0;
 				this.cases[this.ligneH-1][this.colonneH] = 1;
 				this.ligneH -= 1;
 			}
-			
 		}
 
 		moveRight() {
-			if(colonneH < taille && this.cases[ligneH][colonneH+1] != 4){
-				mvmtEffect(this.ligneH, this.colonneH+1);
+			if(this.colonneH < taille-1 && this.cases[this.ligneH][this.colonneH+1] != 4){
+				this.mvmtEffect(this.ligneH, this.colonneH+1);
 				this.cases[this.ligneH][this.colonneH] = 0;
 				this.cases[this.ligneH][this.colonneH+1] = 1;
 				this.colonneH += 1;
@@ -135,11 +152,11 @@
 		}
 
 		moveDown() {
-			if(ligneH < taille && this.cases[ligneH+1][colonneH] != 4){
-				mvmtEffect(this.ligneH+1, this.colonneH);
+			if(this.ligneH < taille-1 && this.cases[this.ligneH+1][this.colonneH] != 4){
+				this.mvmtEffect(this.ligneH+1, this.colonneH);
 				this.cases[this.ligneH][this.colonneH] = 0;
 				this.cases[this.ligneH+1][this.colonneH] = 1;
-				this.colonneH += 1;
+				this.ligneH += 1;
 			}
 		}
 
@@ -153,15 +170,7 @@
 			case 39: plateau.moveRight(); break;
 			case 40: plateau.moveDown();
 		}
-	}
-
-	function mvmtEffect(ligne, colonne){
-		if(plateau[ligne][colonne] == 2){
-			win();
-		}
-		else if(plateau[ligne][colonne] == 3) {
-			points += 50;
-		}
+		plateau.update();
 	}
 
 	function setMessage(titre, contenu) {
@@ -172,11 +181,21 @@
 		content.innerHTML = contenu;
 	}
 	
-	function addButton() {
+	//initialisation button
+	function reinit(plateau) {
+		plateau.resetCases();
+		plateau.update();
+	}
+	
+	function addButton(plateau) {
 		var resetButton = document.createElement("BUTTON");
-		resetButton.addEventListener("click",Plateau.init);
-		resetButton.innerHTML = "Reset";
+		resetButton.addEventListener("click",function(){reinit(plateau);});
+		resetButton.innerHTML = "Click to reset";
 		document.getElementById("interface").appendChild(resetButton);
+	}
+	
+	function addKeyboardEvent(plateau) {
+		document.addEventListener("keypress",function(event){move(event,plateau);});
 	}
 
 
@@ -212,12 +231,15 @@
 		plateau.init();
 
 		plateau.update();
+		addKeyboardEvent(plateau);
+		addButton(plateau);
+
 	}
 
 	testInit();
 	testSetMessage();
-	addButton()
-
+	
+	
 
 
 
