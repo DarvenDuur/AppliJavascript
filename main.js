@@ -107,7 +107,7 @@
 		
 
 		moveLeft(){
-			if(colonneH>0 %% this.cases[ligneH][coloneH-1] != 4){
+			if(colonneH>0 && this.cases[ligneH][coloneH-1] != 4){
 				mvmtEffect(this.ligneH, this.colonneH-1);
 				this.cases[this.ligneH][this.colonneH] = 0;
 				this.cases[this.ligneH][this.colonneH-1] = 1;
