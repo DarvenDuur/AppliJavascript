@@ -1,6 +1,6 @@
 //(function(){
 	var taille = 6;
-	var taillePx = 500; //taille du tableau en px
+	var taillePx = 600; //taille du tableau en px
 	var points = 0;
 
 	class Plateau{
@@ -30,7 +30,7 @@
 			//Placement des bonus et obtacles
 			for (var i = 0; i < taille; i++) {
 				for (var j = 0; j < taille; j++) {
-					if((i != ligneP && j != colonneP) && (i != this.ligneH && j != this.colonneH)) {
+					if(!(i == ligneP && j == colonneP) && !(i == this.ligneH && j == this.colonneH)) {
 						var alea = Math.random();
 						if(alea < 0.20){
 							this.cases[i][j] = 4; //Placement des obstacles
@@ -146,7 +146,7 @@
 
 	}
 	//invoked on keypress
-	function move(event){
+	function move(event, plateau){
 		switch(event.keyCode) {
 			case 37: plateau.moveLeft(); break;
 			case 38: plateau.moveUp(); break;
@@ -165,19 +165,18 @@
 	}
 
 	function setMessage(titre, contenu) {
-
-		var aside = document.createElement("ASIDE"),
-			title = document.createElement("H2"),
-			content = document.createElement("P");
+		var title = document.getElementById("textTitre"),
+			content = document.getElementById("textContenu");
 
 		title.innerHTML = titre;
 		content.innerHTML = contenu;
-		aside.id = "text";
-		aside.appendChild(title);
-		aside.appendChild(content);
-
-		var currentAside = document.getElementById("text");
-		currentAside.parentNode.replaceChild(aside, currentAside);
+	}
+	
+	function addButton() {
+		var resetButton = document.createElement("BUTTON");
+		resetButton.addEventListener("click",Plateau.init);
+		resetButton.innerHTML = "Reset";
+		document.getElementById("interface").appendChild(resetButton);
 	}
 
 
@@ -205,7 +204,7 @@
 	 * only for debug use
 	 */
 	function testSetMessage() {
-		setMessage("lol, it's not even funny","blabla blabla blablablabla blabla blablabla blablabla")
+		setMessage("lol, it's not even funny","blabla blabla blablablabla blabla blablabla blablabla");
 	}
 
 	function testInit() {
@@ -217,6 +216,7 @@
 
 	testInit();
 	testSetMessage();
+	addButton()
 
 
 
