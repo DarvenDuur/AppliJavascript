@@ -107,39 +107,40 @@
 		
 
 		moveLeft(){
-			if(this.cases[ligneH][coloneH-1] != 4 && colonneH > 0){
+			if(colonneH > 0 && this.cases[ligneH][coloneH-1] != 4){
+				mvmtEffect(this.ligneH, this.colonneH-1);
 				this.cases[this.ligneH][this.colonneH] = 0;
 				this.cases[this.ligneH][this.colonneH-1] = 1;
 				this.colonneH -= 1;
 			}
-			mvmtEffect(this.ligneH, this.colonneH);
 		}
 
 		moveUp() {
-			if(this.cases[ligneH-1][colonneH] != 4 && ligneH > 0){
+			if(ligneH > 0 && this.cases[ligneH-1][colonneH] != 4){
+				mvmtEffect(this.ligneH-1, this.colonneH);
 				this.cases[this.ligneH][this.colonneH] = 0;
 				this.cases[this.ligneH-1][this.colonneH] = 1;
 				this.ligneH -= 1;
 			}
-			mvmtEffect(this.ligneH, this.colonneH);
+			
 		}
 
 		moveRight() {
-			if(this.cases[ligneH][colonneH+1] != 4 && colonneH < taille){
+			if(colonneH < taille && this.cases[ligneH][colonneH+1] != 4){
+				mvmtEffect(this.ligneH, this.colonneH+1);
 				this.cases[this.ligneH][this.colonneH] = 0;
 				this.cases[this.ligneH][this.colonneH+1] = 1;
 				this.colonneH += 1;
 			}
-			mvmtEffect(this.ligneH, this.colonneH);
 		}
 
 		moveDown() {
-			if(this.cases[ligneH+1][colonneH] != 4 && ligneH < taille){
+			if(ligneH < taille && this.cases[ligneH+1][colonneH] != 4){
+				mvmtEffect(this.ligneH+1, this.colonneH);
 				this.cases[this.ligneH][this.colonneH] = 0;
 				this.cases[this.ligneH+1][this.colonneH] = 1;
 				this.colonneH += 1;
 			}
-			mvmtEffect(this.ligneH, this.colonneH);
 		}
 
 
