@@ -1,6 +1,6 @@
 //(function(){
 	var taille = 6;
-	var taillePx = 500; //taille du tableau en px
+	var taillePx = 600; //taille du tableau en px
 	var points = 0;
 
 	class Plateau{
@@ -204,7 +204,7 @@
 	 * only for debug use
 	 */
 	function testSetMessage() {
-		setMessage("lol, it's not even funny","blabla blabla blablablabla blabla blablabla blablabla")
+		setMessage("lol, it's not even funny","blabla blabla blablablabla blabla blablabla blablabla");
 	}
 
 	function testInit() {
