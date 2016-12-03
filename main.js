@@ -30,7 +30,7 @@
 			//Placement des bonus et obtacles
 			for (var i = 0; i < taille; i++) {
 				for (var j = 0; j < taille; j++) {
-					if(!(i == ligneP && j == colonneP) && !(i == this.ligneH && j == this.colonneH)) {
+					if(!(i == ligneP || j == colonneP) && !(i == this.ligneH || j == this.colonneH)) {
 						var alea = Math.random();
 						if(alea < 0.20){
 							this.cases[i][j] = 4; //Placement des obstacles
