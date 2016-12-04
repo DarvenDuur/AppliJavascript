@@ -74,12 +74,13 @@
 
 		//determines if the board allows win (hero can access the princess)
 		isWinable(){
-			var working = true,
-				acessibleTiles = new Array(),
+			var acessibleTiles = new Array(),
 				accessible = false,
 				quickCoor = [[1,0],[-1,0],[0,1],[0,-1]],
 				newCaseI,
-				newCaseJ;
+				newCaseJ,
+				toSpreadTiles = new Array(),
+				tile;
 				
 			//initialise the array representing the accessible tiles for the hero
 			for (var i = 0; i < taille; i++) {
@@ -91,34 +92,24 @@
 			
 			//seting the hero tile as accessible
 			acessibleTiles[this.ligneH][this.colonneH]=true;
+			toSpreadTiles.push([this.ligneH,this.colonneH]);
 			
-			//while any tile is able to be added
-			var loopLimit = 0;
-			while (working && loopLimit<100) {
-				working = false;
-				//spread truth for each true tile to adjacent ones not occupied by an obstacle
-				for (var i = 0; i < taille; i++) {
-					for (var j = 0; j < taille; j++) {
-						if (acessibleTiles[i][j]) {
-							//spreading truth to adjacent tiles
-							for (var coor = 0; coor < 4; coor++) {
-								newCaseI=i+quickCoor[coor][0];
-								newCaseJ=j+quickCoor[coor][1];
-								//if the tile is in the board
-								if ((newCaseI<taille && newCaseI>=0) &&
-									(newCaseJ<taille && newCaseJ>=0)){
-										//if the tile is not occupied by an obstacle
-										if(!acessibleTiles[newCaseI][newCaseJ] && this.cases[newCaseI][newCaseJ] != 4) {
-											acessibleTiles[newCaseI][newCaseJ] = true;
-											working = true;
-										}
-								}	
-							}
+			//while there are tiles to spread
+			while (toSpreadTiles.length>0) {
+				tile = toSpreadTiles.pop();
+				//spreading truth to adjacent tiles
+				for (var coor = 0; coor < 4; coor++) {
+					newCaseI=tile[0]+quickCoor[coor][0];
+					newCaseJ=tile[1]+quickCoor[coor][1];
+					//if the tile is in the board
+					if ((newCaseI<taille && newCaseI>=0) && (newCaseJ<taille && newCaseJ>=0)){
+						//if the tile is not occupied by an obstacle and not already tested
+						if(!acessibleTiles[newCaseI][newCaseJ] && this.cases[newCaseI][newCaseJ] != 4) {
+							acessibleTiles[newCaseI][newCaseJ] = true;
+							toSpreadTiles.push([newCaseI,newCaseJ]);
 						}
-					}
+					}	
 				}
-				loopLimit +=1;
-				
 			}
 			
 			//check if the princess is in the accessible tiles
@@ -127,7 +118,7 @@
 					if (acessibleTiles[i][j] && this.cases[i][j]==2) {accessible = true;}
 				}
 			}
-			
+			console.log(accessible);
 			return accessible;
 		}		
 		
