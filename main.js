@@ -3,6 +3,7 @@
 	var taillePx = 600; //taille du tableau en px
 	var points = 0;
 	var maxTime = 30; // max time in seconds
+	var pointBonnus = 50; // points added on bonnus
 
 	class Plateau{
 		constructor(){
@@ -124,7 +125,7 @@
 				win();
 			}
 			else if(this.cases[ligne][colonne] == 3) {
-				points += 50;
+				bonnus();
 			}
 		}
 
@@ -183,6 +184,18 @@
 
 		title.innerHTML = titre;
 		content.innerHTML = contenu;
+	}
+	
+	//points
+	function showPoints() {
+		var HTMLtimer = document.getElementById("score");
+
+		HTMLtimer.innerHTML = "Score : " + points + " points";
+	}
+	
+	function bonnus() {
+		points += pointBonnus;
+		showPoints();
 	}
 	
 	//initialisation button
