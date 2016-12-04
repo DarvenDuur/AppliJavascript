@@ -1,9 +1,12 @@
 //(function(){
-	var taille = 6;
+	var taille = 8;
 	var taillePx = 600; //taille du tableau en px
 	var points;
 	var maxTime = 30; // max time in seconds
 	var pointBonnus = 50; // points added on bonnus
+	var bonnusRate = 0.2;
+	var obstacleRate = 0.2;
+	var canPlay;
 
 	class Plateau{
 		constructor(){
@@ -18,6 +21,7 @@
 		
 		//clear table and refill it
 		resetCases(){
+			canPlay = true;
 			for (var i = 0; i < taille; i++) {
 				this.cases[i]=new Array();
 				for (var j = 0; j < taille; j++) {
@@ -28,10 +32,13 @@
 		}
 
 		init(){	
+			//Initialisation du texte
+			setMessage("Sauvez la princesse!","Vous devez sauver la princesse avant la fin du temps imparti.");
+		
 			//Initialisation du timer
 			setTimer();
 			
-			//reinitialisation du score
+			//Initialisation du score
 			points = 0;
 			showPoints();
 		
@@ -52,10 +59,10 @@
 				for (var j = 0; j < taille; j++) {
 					if(!(i == ligneP && j == colonneP) && !(i == this.ligneH && j == this.colonneH)) {
 						var alea = Math.random();
-						if(alea < 0.20){
+						if(alea < obstacleRate){
 							this.cases[i][j] = 4; //Placement des obstacles
 						}
-						else if(alea < 0.45){
+						else if(alea < obstacleRate+bonnusRate){
 							this.cases[i][j] = 3; //Placement des bonus
 						}
 					}
@@ -174,13 +181,16 @@
 	
 	//invoked on keypress
 	function move(event, plateau){
-		switch(event.keyCode) {
-			case 37: plateau.moveLeft(); break;
-			case 38: plateau.moveUp(); break;
-			case 39: plateau.moveRight(); break;
-			case 40: plateau.moveDown();
+		if (canPlay) {
+			switch(event.keyCode) {
+				case 37: plateau.moveLeft(); break;
+				case 38: plateau.moveUp(); break;
+				case 39: plateau.moveRight(); break;
+				case 40: plateau.moveDown();
+			}
+			plateau.update();
 		}
-		plateau.update();
+		
 	}
 
 	function setMessage(titre, contenu) {
@@ -283,6 +293,7 @@
 	//victory and loss
 	function freeze() {
 		if (timer){clearInterval(timer);} // stops the timer if it exists
+		canPlay = false;
 	}
 	function win() {
 		setMessage("Vous avez gagné!", "Bravo, vous pouvez recommencer (il y a plein de princesses qui attendent d'etre sauvées)!");
@@ -294,7 +305,6 @@
 	}
 	
 	testInit();
-	testSetMessage();
 	
 	
 
