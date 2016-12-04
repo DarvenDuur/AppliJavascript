@@ -2,6 +2,7 @@
 	var taille = 6;
 	var taillePx = 600; //taille du tableau en px
 	var points = 0;
+	var maxTime = 30; // max time in seconds
 
 	class Plateau{
 		constructor(){
@@ -25,7 +26,10 @@
 			this.init();
 		}
 
-		init(){			
+		init(){	
+			//Initialisation du timer
+			setTimer();
+		
 			//Placement de la princesse
 			var ligneP = Math.floor(Math.random() * taille);
 			var colonneP = Math.floor(Math.random() * taille);
@@ -198,6 +202,28 @@
 		document.addEventListener("keypress",function(event){move(event,plateau);});
 	}
 
+	// timer (second/10 based)
+	var time, timer;
+	function setTimer(){
+		if (timer){clearInterval(timer);} // stops the timer if it exists
+		time = maxTime*10;
+		timer = setInterval(updateTimer, 100);
+	}
+	
+	function showTimer(){
+		var HTMLtimer = document.getElementById("timer");
+
+		HTMLtimer.innerHTML = "Il vous reste : " + (time/10).toFixed(1) + " secondes";
+	}
+	
+	function updateTimer(){
+		time -= 1;
+		showTimer();
+		if (time==0){
+			clearInterval(timer);
+			lose();
+		}
+	}
 
 	/** test Plateau.update()
 	 * only for debug use
