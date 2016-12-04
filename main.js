@@ -31,6 +31,7 @@
 			this.init();
 		}
 
+		//initialise all parameters
 		init(){	
 			//Initialisation du texte
 			setMessage("Sauvez la princesse!","Vous devez sauver la princesse avant la fin du temps imparti.");
@@ -68,9 +69,59 @@
 					}
 				}
 			}
+			if (!this.isWinable()) {this.resetCases();} //si on ne peut pas gagner
 		}
 
-
+		//determines if the board allows win (hero can access the princess)
+		isWinable(){
+			var acessibleTiles = new Array(),
+				accessible = false,
+				quickCoor = [[1,0],[-1,0],[0,1],[0,-1]],
+				newCaseI,
+				newCaseJ,
+				toSpreadTiles = new Array(),
+				tile;
+				
+			//initialise the array representing the accessible tiles for the hero
+			for (var i = 0; i < taille; i++) {
+				acessibleTiles[i]=new Array();
+				for (var j = 0; j < taille; j++) {
+					acessibleTiles[i][j]=false;
+				}
+			}
+			
+			//seting the hero tile as accessible
+			acessibleTiles[this.ligneH][this.colonneH]=true;
+			toSpreadTiles.push([this.ligneH,this.colonneH]);
+			
+			//while there are tiles to spread
+			while (toSpreadTiles.length>0) {
+				tile = toSpreadTiles.pop();
+				//spreading truth to adjacent tiles
+				for (var coor = 0; coor < 4; coor++) {
+					newCaseI=tile[0]+quickCoor[coor][0];
+					newCaseJ=tile[1]+quickCoor[coor][1];
+					//if the tile is in the board
+					if ((newCaseI<taille && newCaseI>=0) && (newCaseJ<taille && newCaseJ>=0)){
+						//if the tile is not occupied by an obstacle and not already tested
+						if(!acessibleTiles[newCaseI][newCaseJ] && this.cases[newCaseI][newCaseJ] != 4) {
+							acessibleTiles[newCaseI][newCaseJ] = true;
+							toSpreadTiles.push([newCaseI,newCaseJ]);
+						}
+					}	
+				}
+			}
+			
+			//check if the princess is in the accessible tiles
+			for (var i = 0; i < taille; i++) {
+				for (var j = 0; j < taille; j++) {
+					if (acessibleTiles[i][j] && this.cases[i][j]==2) {accessible = true;}
+				}
+			}
+			console.log(accessible);
+			return accessible;
+		}		
+		
 		/** creates HTML Node
 		 * Returns the html pseudo-table corresponding to the current Plateau state
 		 */
