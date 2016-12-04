@@ -1,7 +1,7 @@
 //(function(){
 	var taille = 6;
 	var taillePx = 600; //taille du tableau en px
-	var points = 0;
+	var points;
 	var maxTime = 30; // max time in seconds
 	var pointBonnus = 50; // points added on bonnus
 
@@ -30,6 +30,10 @@
 		init(){	
 			//Initialisation du timer
 			setTimer();
+			
+			//reinitialisation du score
+			points = 0;
+			showPoints();
 		
 			//Placement de la princesse
 			var ligneP = Math.floor(Math.random() * taille);
@@ -167,6 +171,7 @@
 
 
 	}
+	
 	//invoked on keypress
 	function move(event, plateau){
 		switch(event.keyCode) {
@@ -198,7 +203,7 @@
 		showPoints();
 	}
 	
-	//initialisation button
+	//reset button
 	function reinit(plateau) {
 		plateau.resetCases();
 		plateau.update();
@@ -275,6 +280,19 @@
 
 	}
 
+	//victory and loss
+	function freeze() {
+		if (timer){clearInterval(timer);} // stops the timer if it exists
+	}
+	function win() {
+		setMessage("Vous avez gagné!", "Bravo, vous pouvez recommencer (il y a plein de princesses qui attendent d'etre sauvées)!");
+		freeze();
+	}
+	function lose() {
+		setMessage("Vous avez perdu!", "Dommage, essayez encore (on a plein de princesses en stock)!");
+		freeze();
+	}
+	
 	testInit();
 	testSetMessage();
 	
