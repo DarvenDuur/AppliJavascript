@@ -1,12 +1,12 @@
 //(function(){
-	var taille = 8;
+	var taille = 10;
 	var taillePx = 600; //taille du tableau en px
 	var points;
 	var maxTime = 30; // max time in seconds
 	var pointBonnus = 50; // points added on bonnus
-	var bonnusRate = 0.2;
-	var obstacleRate = 0.2;
-	var canPlay;
+	var bonnusRate = 0.1;
+	var obstacleRate = 0.3;
+	var canPlay = true;
 
 	class Plateau{
 		constructor(){
@@ -118,7 +118,6 @@
 					if (acessibleTiles[i][j] && this.cases[i][j]==2) {accessible = true;}
 				}
 			}
-			console.log(accessible);
 			return accessible;
 		}		
 		
