@@ -219,6 +219,7 @@
 	
 	//invoked on keypress
 	function move(event){
+		event.preventDefault();
 		if (canPlay) {
 			switch(event.keyCode) {
 				case 37: moveLeft(); break;
@@ -228,8 +229,6 @@
 			}
 			update();
 		}
-		
-		event.preventDefault();
 		
 	}
 
@@ -267,7 +266,7 @@
 	}
 	
 	function addKeyboardEvent() {
-		document.addEventListener("keypress",move);
+		document.addEventListener("keydown",move);
 	}
 
 	// timer (second/10 based)
