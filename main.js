@@ -229,6 +229,8 @@
 			update();
 		}
 		
+		event.preventDefault();
+		
 	}
 
 	function setMessage(titre, contenu) {
