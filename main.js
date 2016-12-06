@@ -8,31 +8,22 @@
 	var obstacleRate = 0.3;
 	var canPlay = true;
 
-	class Plateau{
-		constructor(){
-			this.cases=new Array();
-			for (var i = 0; i < taille; i++) {
-				this.cases[i]=new Array();
-				for (var j = 0; j < taille; j++) {
-					this.cases[i][j]=0;//valeur va etre 0 pour une case vide, 1 pour un heros, 2 pour une princesse, 3 pour un bonus, 4 pour un obstacle
-				}
-			}
-		}
-		
+	var cases=new Array();//valeur va etre 0 pour une case vide, 1 pour un heros, 2 pour une princesse, 3 pour un bonus, 4 pour un obstacle
+	
 		//clear table and refill it
-		resetCases(){
+	function resetCases(){
 			canPlay = true;
 			for (var i = 0; i < taille; i++) {
-				this.cases[i]=new Array();
+				cases[i]=new Array();
 				for (var j = 0; j < taille; j++) {
-					this.cases[i][j]=0;
+					cases[i][j]=0;
 				}
 			}
-			this.init();
+			init();
 		}
 
 		//initialise all parameters
-		init(){	
+	function init(){	
 			//Initialisation du texte
 			setMessage("Sauvez la princesse!","Vous devez sauver la princesse avant la fin du temps imparti.");
 		
@@ -46,34 +37,34 @@
 			//Placement de la princesse
 			var ligneP = Math.floor(Math.random() * taille);
 			var colonneP = Math.floor(Math.random() * taille);
-			this.cases[ligneP][colonneP] = 2;
+			cases[ligneP][colonneP] = 2;
 
 			//Placement du heros
 			do {
-				this.ligneH = Math.floor(Math.random() * taille);
-				this.colonneH = Math.floor(Math.random() * taille);
-			} while (this.ligneH==ligneP || this.colonneH==colonneP);
-			this.cases[this.ligneH][this.colonneH] = 1;
+				ligneH = Math.floor(Math.random() * taille);
+				colonneH = Math.floor(Math.random() * taille);
+			} while (ligneH==ligneP || colonneH==colonneP);
+			cases[ligneH][colonneH] = 1;
 
 			//Placement des bonus et obtacles
 			for (var i = 0; i < taille; i++) {
 				for (var j = 0; j < taille; j++) {
-					if(!(i == ligneP && j == colonneP) && !(i == this.ligneH && j == this.colonneH)) {
+					if(!(i == ligneP && j == colonneP) && !(i == ligneH && j == colonneH)) {
 						var alea = Math.random();
 						if(alea < obstacleRate){
-							this.cases[i][j] = 4; //Placement des obstacles
+							cases[i][j] = 4; //Placement des obstacles
 						}
 						else if(alea < obstacleRate+bonnusRate){
-							this.cases[i][j] = 3; //Placement des bonus
+							cases[i][j] = 3; //Placement des bonus
 						}
 					}
 				}
 			}
-			if (!this.isWinable()) {this.resetCases();} //si on ne peut pas gagner
+			if (!isWinable()) {resetCases();} //si on ne peut pas gagner
 		}
 
 		//determines if the board allows win (hero can access the princess)
-		isWinable(){
+	function isWinable(){
 			var acessibleTiles = new Array(),
 				accessible = false,
 				quickCoor = [[1,0],[-1,0],[0,1],[0,-1]],
@@ -91,8 +82,8 @@
 			}
 			
 			//seting the hero tile as accessible
-			acessibleTiles[this.ligneH][this.colonneH]=true;
-			toSpreadTiles.push([this.ligneH,this.colonneH]);
+			acessibleTiles[ligneH][colonneH]=true;
+			toSpreadTiles.push([ligneH,colonneH]);
 			
 			//while there are tiles to spread
 			while (toSpreadTiles.length>0) {
@@ -104,7 +95,7 @@
 					//if the tile is in the board
 					if ((newCaseI<taille && newCaseI>=0) && (newCaseJ<taille && newCaseJ>=0)){
 						//if the tile is not occupied by an obstacle and not already tested
-						if(!acessibleTiles[newCaseI][newCaseJ] && this.cases[newCaseI][newCaseJ] != 4) {
+						if(!acessibleTiles[newCaseI][newCaseJ] && cases[newCaseI][newCaseJ] != 4) {
 							acessibleTiles[newCaseI][newCaseJ] = true;
 							toSpreadTiles.push([newCaseI,newCaseJ]);
 						}
@@ -115,7 +106,7 @@
 			//check if the princess is in the accessible tiles
 			for (var i = 0; i < taille; i++) {
 				for (var j = 0; j < taille; j++) {
-					if (acessibleTiles[i][j] && this.cases[i][j]==2) {accessible = true;}
+					if (acessibleTiles[i][j] && cases[i][j]==2) {accessible = true;}
 				}
 			}
 			return accessible;
@@ -124,7 +115,7 @@
 		/** creates HTML Node
 		 * Returns the html pseudo-table corresponding to the current Plateau state
 		 */
-		toHtmlNode() {
+	function toHtmlNode() {
 			var table,
 				line,
 				cell,
@@ -143,7 +134,7 @@
 					cell.className = "case";
 					cell.style.width = taillePx/taille+"px";
 
-					switch (this.cases[i][j]){
+					switch (cases[i][j]){
 						case 1: // if the cell contains the hero
 							subCell = document.createElement("DIV");
 							subCell.id = "hero";
@@ -176,69 +167,66 @@
 			return table;
 		}
 
-		update() {
+	function update() {
 			plateau=document.getElementById("plateau");
-			plateau.parentNode.replaceChild(this.toHtmlNode(), plateau);
+			plateau.parentNode.replaceChild(toHtmlNode(), plateau);
 		}
 
-		mvmtEffect(ligne, colonne){
-			if(this.cases[ligne][colonne] == 2){
+	function mvmtEffect(ligne, colonne){
+			if(cases[ligne][colonne] == 2){
 				win();
 			}
-			else if(this.cases[ligne][colonne] == 3) {
+			else if(cases[ligne][colonne] == 3) {
 				bonnus();
 			}
 		}
 
-		moveLeft(){
-			if(this.colonneH > 0 && this.cases[this.ligneH][this.colonneH-1] != 4){
-				this.mvmtEffect(this.ligneH, this.colonneH-1);
-				this.cases[this.ligneH][this.colonneH] = 0;
-				this.cases[this.ligneH][this.colonneH-1] = 1;
-				this.colonneH -= 1;
+	function moveLeft(){
+			if(colonneH > 0 && cases[ligneH][colonneH-1] != 4){
+				mvmtEffect(ligneH, colonneH-1);
+				cases[ligneH][colonneH] = 0;
+				cases[ligneH][colonneH-1] = 1;
+				colonneH -= 1;
 			}
 		}
 
-		moveUp() {
-			if(this.ligneH > 0 && this.cases[this.ligneH-1][this.colonneH] != 4){
-				this.mvmtEffect(this.ligneH-1, this.colonneH);
-				this.cases[this.ligneH][this.colonneH] = 0;
-				this.cases[this.ligneH-1][this.colonneH] = 1;
-				this.ligneH -= 1;
+	function moveUp() {
+			if(ligneH > 0 && cases[ligneH-1][colonneH] != 4){
+				mvmtEffect(ligneH-1, colonneH);
+				cases[ligneH][colonneH] = 0;
+				cases[ligneH-1][colonneH] = 1;
+				ligneH -= 1;
 			}
 		}
 
-		moveRight() {
-			if(this.colonneH < taille-1 && this.cases[this.ligneH][this.colonneH+1] != 4){
-				this.mvmtEffect(this.ligneH, this.colonneH+1);
-				this.cases[this.ligneH][this.colonneH] = 0;
-				this.cases[this.ligneH][this.colonneH+1] = 1;
-				this.colonneH += 1;
+	function moveRight() {
+			if(colonneH < taille-1 && cases[ligneH][colonneH+1] != 4){
+				mvmtEffect(ligneH, colonneH+1);
+				cases[ligneH][colonneH] = 0;
+				cases[ligneH][colonneH+1] = 1;
+				colonneH += 1;
 			}
 		}
 
-		moveDown() {
-			if(this.ligneH < taille-1 && this.cases[this.ligneH+1][this.colonneH] != 4){
-				this.mvmtEffect(this.ligneH+1, this.colonneH);
-				this.cases[this.ligneH][this.colonneH] = 0;
-				this.cases[this.ligneH+1][this.colonneH] = 1;
-				this.ligneH += 1;
-			}
+	function moveDown() {
+		if(ligneH < taille-1 && cases[ligneH+1][colonneH] != 4){
+			mvmtEffect(ligneH+1, colonneH);
+			cases[ligneH][colonneH] = 0;
+			cases[ligneH+1][colonneH] = 1;
+			ligneH += 1;
 		}
-
-
 	}
 	
 	//invoked on keypress
-	function move(event, plateau){
+	function move(event){
 		if (canPlay) {
 			switch(event.keyCode) {
-				case 37: plateau.moveLeft(); break;
-				case 38: plateau.moveUp(); break;
-				case 39: plateau.moveRight(); break;
-				case 40: plateau.moveDown();
+				case 37: moveLeft(); break;
+				case 38: moveUp(); break;
+				case 39: moveRight(); break;
+				case 40: moveDown();
 			}
-			plateau.update();
+			update();
 		}
 		
 	}
@@ -264,20 +252,20 @@
 	}
 	
 	//reset button
-	function reinit(plateau) {
-		plateau.resetCases();
-		plateau.update();
+	function reinit() {
+		resetCases();
+		update();
 	}
 	
-	function addButton(plateau) {
+	function addButton() {
 		var resetButton = document.createElement("BUTTON");
-		resetButton.addEventListener("click",function(){reinit(plateau);});
+		resetButton.addEventListener("click",reinit);
 		resetButton.innerHTML = "Click to reset";
 		document.getElementById("interface").appendChild(resetButton);
 	}
 	
-	function addKeyboardEvent(plateau) {
-		document.addEventListener("keypress",function(event){move(event,plateau);});
+	function addKeyboardEvent() {
+		document.addEventListener("keypress",move);
 	}
 
 	// timer (second/10 based)
@@ -303,40 +291,12 @@
 		}
 	}
 
-	/** test Plateau.update()
-	 * only for debug use
-	 */
-	function testUpdate() {
-		var plateau = new Plateau();
-		plateau.cases[5][4]=1;
-		plateau.cases[0][2]=2;
-		plateau.cases[4][4]=4;
-		plateau.cases[3][2]=4;
-		plateau.cases[0][4]=4;
+	function run() {
+		resetCases();
 
-		plateau.update();
-
-		plateau.cases[3][4]=3;
-		plateau.cases[4][2]=3;
-		plateau.cases[0][3]=3;
-
-		plateau.update();
-	}
-
-	/** test setMessage()
-	 * only for debug use
-	 */
-	function testSetMessage() {
-		setMessage("lol, it's not even funny","blabla blabla blablablabla blabla blablabla blablabla");
-	}
-
-	function testInit() {
-		var plateau = new Plateau();
-		plateau.init();
-
-		plateau.update();
-		addKeyboardEvent(plateau);
-		addButton(plateau);
+		update();
+		addKeyboardEvent();
+		addButton();
 
 	}
 
@@ -354,7 +314,7 @@
 		freeze();
 	}
 	
-	testInit();
+	run();
 	
 	
 
