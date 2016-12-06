@@ -1,4 +1,4 @@
-//(function(){
+(function(){
 	var taille = 10;
 	var taillePx = 600; //taille du tableau en px
 	var points;
@@ -297,7 +297,6 @@
 		update();
 		addKeyboardEvent();
 		addButton();
-
 	}
 
 	//victory and loss
@@ -320,4 +319,4 @@
 
 
 
-//})();
+})();
