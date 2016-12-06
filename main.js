@@ -1,14 +1,16 @@
 (function(){
-	var taille = 10;
-	var taillePx = 600; //taille du tableau en px
-	var points;
-	var maxTime = 30; // max time in seconds
-	var pointBonnus = 50; // points added on bonnus
-	var bonnusRate = 0.1;
-	var obstacleRate = 0.3;
-	var canPlay = true;
-
-	var cases=new Array();//valeur va etre 0 pour une case vide, 1 pour un heros, 2 pour une princesse, 3 pour un bonus, 4 pour un obstacle
+	var taille = 10,
+		taillePx = 600, //taille du tableau en px
+		points,
+		maxTime = 30, // max time in seconds
+		pointBonnus = 50, // points added on bonnus
+		bonnusRate = 0.1,
+		obstacleRate = 0.3,
+		canPlay = true,
+		cases=new Array(),//valeur va etre 0 pour une case vide, 1 pour un heros, 2 pour une princesse, 3 pour un bonus, 4 pour un obstacle
+		ligneH, colonneH, //hero
+		ligneP, colonneP, //princesse
+		ligneE, colonneE; //ennemi
 	
 		//clear table and refill it
 	function resetCases(){
@@ -35,8 +37,8 @@
 			showPoints();
 		
 			//Placement de la princesse
-			var ligneP = Math.floor(Math.random() * taille);
-			var colonneP = Math.floor(Math.random() * taille);
+			ligneP = Math.floor(Math.random() * taille);
+			colonneP = Math.floor(Math.random() * taille);
 			cases[ligneP][colonneP] = 2;
 
 			//Placement du heros
@@ -87,7 +89,7 @@
 			
 			//while there are tiles to spread
 			while (toSpreadTiles.length>0) {
-				tile = toSpreadTiles.pop();
+				tile = toSpreadTiles.shift();
 				//spreading truth to adjacent tiles
 				for (var coor = 0; coor < 4; coor++) {
 					newCaseI=tile[0]+quickCoor[coor][0];
@@ -110,7 +112,58 @@
 				}
 			}
 			return accessible;
-		}		
+		}
+		
+	//returns a list of coordonates from start to end, avoiding obstacles, and if precised, the hero, and the princess
+	function pathFinder(xStart,yStart,xEnd,yEnd) {
+		var acessibleTiles = new Array(), //true si traitée, false si pas traitée, Array([coordonnées])
+			path = false,
+			quickCoor = [[1,0],[-1,0],[0,1],[0,-1]],
+			newCaseI,
+			newCaseJ,
+			toSpreadTiles = new Array(),
+			tile;
+			
+		//initialise the array representing the accessible tiles for the hero
+		for (var i = 0; i < taille; i++) {
+			acessibleTiles[i]=new Array();
+			for (var j = 0; j < taille; j++) {
+				acessibleTiles[i][j]=false;
+			}
+		}
+		
+		//seting the hero tile as accessible
+		acessibleTiles[xStart][yStart]=new Array();
+		toSpreadTiles.push([xStart,yStart]);
+		
+		//while there are tiles to spread
+		while (toSpreadTiles.length>0 && !path) {
+			tile = toSpreadTiles.shift();
+			//add itself to the way to the next tile
+			acessibleTiles[tile[0]][tile[1]].push([tile[0],tile[1]]);
+			//spreading truth to adjacent tiles
+			for (var coor = 0; coor < 4; coor++) {
+				newCaseI=tile[0]+quickCoor[coor][0];
+				newCaseJ=tile[1]+quickCoor[coor][1];
+				//if the tile is in the board
+				if ((newCaseI<taille && newCaseI>=0) && (newCaseJ<taille && newCaseJ>=0)){
+					//if the tile is not occupied by an obstacle and not already tested
+					if(!acessibleTiles[newCaseI][newCaseJ] && cases[newCaseI][newCaseJ] != 4) {
+						acessibleTiles[newCaseI][newCaseJ] = acessibleTiles[tile[0]][tile[1]].slice(); // copy the path to the tile in the tile
+						toSpreadTiles.push([newCaseI,newCaseJ]);
+					}
+					if(newCaseI == xEnd && newCaseJ == yEnd) {
+						path = acessibleTiles[tile[0]][tile[1]].slice();
+						path.push([newCaseI,newCaseJ])
+						break;
+					}
+				}
+			}
+			acessibleTiles[tile[0]][tile[1]] = true; //clear the 
+		}
+		
+		return path;
+	}
 		
 		/** creates HTML Node
 		 * Returns the html pseudo-table corresponding to the current Plateau state
@@ -314,10 +367,45 @@
 		freeze();
 	}
 	
+	//display one of the fastest path to the princess
+	function testPath() {
+		setInterval(autoMove, 1000);
+	}
+	
+	function autoMove() {
+		var path = pathFinder(ligneH, colonneH, ligneP, colonneP),
+			tile;
+		path.shift();
+		tile = path.shift();
+		//to move the Enemy and avoid the princess if (tile[0]!=ligneP || tile[1]!=colonneP) {
+		switch (ligneH-tile[0]){
+			case -1:
+				console.log("down");
+				moveDown();
+				break;
+			case 1:
+				console.log("up");
+				moveUp();
+				break;
+			default:
+				switch (colonneH-tile[1]){
+					case -1:
+						
+					console.log("right");
+						moveRight();
+						break;
+					case 1:
+					console.log("left");
+						moveLeft();
+						break;
+				}
+				break;
+		}//}
+		update();
+	}
+	
 	run();
-	
-	
-
+	testPath();
 
 
 })();
