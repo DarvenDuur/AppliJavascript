@@ -43,6 +43,9 @@ h1 {
 #princesse {
 	background-image: url("img/princess.png");
 }
+#ennemi {
+	background-image: url("img/ennemy.png");
+}
 .obstacle {
 	background-image: url("img/obstacle.png");
 }

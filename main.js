@@ -7,7 +7,8 @@
 		bonnusRate = 0.1,
 		obstacleRate = 0.3,
 		canPlay = true,
-		cases=new Array(),//valeur va etre 0 pour une case vide, 1 pour un heros, 2 pour une princesse, 3 pour un bonus, 4 pour un obstacle
+		targetPrincess = false, //if true will try to kill the princess, else will try to kill the hero
+		cases=new Array(),//valeur va etre 0 pour une case vide, 1 pour un heros, 2 pour une princesse, 3 pour un bonus, 4 pour un obstacle, 5 pour l'ennemi
 		ligneH, colonneH, //hero
 		ligneP, colonneP, //princesse
 		ligneE, colonneE; //ennemi
@@ -47,11 +48,17 @@
 				colonneH = Math.floor(Math.random() * taille);
 			} while (ligneH==ligneP || colonneH==colonneP);
 			cases[ligneH][colonneH] = 1;
+			
+			do {
+				ligneE = Math.floor(Math.random() * taille);
+				colonneE = Math.floor(Math.random() * taille);
+			} while (ligneE==ligneP || ligneE==ligneH || colonneH==colonneP || colonneE==colonneP);
+			cases[ligneE][colonneE] = 5;
 
 			//Placement des bonus et obtacles
 			for (var i = 0; i < taille; i++) {
 				for (var j = 0; j < taille; j++) {
-					if(!(i == ligneP && j == colonneP) && !(i == ligneH && j == colonneH)) {
+					if(!(i == ligneP && j == colonneP) && !(i == ligneH && j == colonneH) && !(i == ligneE && j == colonneE)) {
 						var alea = Math.random();
 						if(alea < obstacleRate){
 							cases[i][j] = 4; //Placement des obstacles
@@ -211,6 +218,12 @@
 							subCell.className = "obstacle";
 							cell.appendChild(subCell);
 							break;
+
+						case 5: // if the cell contains the ennemy
+							subCell = document.createElement("DIV");
+							subCell.id = "ennemi";
+							cell.appendChild(subCell);
+							break;
 					}
 					line.appendChild(cell);
 				}
@@ -280,6 +293,8 @@
 				case 39: moveRight(); break;
 				case 40: moveDown();
 			}
+			if (targetPrincess) {autoMoveEP();} else {autoMoveEH();}
+			
 			update();
 		}
 		
@@ -377,35 +392,87 @@
 			tile;
 		path.shift();
 		tile = path.shift();
-		//to move the Enemy and avoid the princess if (tile[0]!=ligneP || tile[1]!=colonneP) {
 		switch (ligneH-tile[0]){
 			case -1:
-				console.log("down");
 				moveDown();
 				break;
 			case 1:
-				console.log("up");
 				moveUp();
 				break;
 			default:
 				switch (colonneH-tile[1]){
 					case -1:
-						
-					console.log("right");
 						moveRight();
 						break;
 					case 1:
-					console.log("left");
 						moveLeft();
 						break;
 				}
 				break;
-		}//}
+		}
 		update();
 	}
 	
+	
+	function moveE(newX, newY) {
+		if (ligneE-newX==1) {
+			//moveUp
+			cases[ligneE][colonneE]=0;
+			ligneE-=1;
+			cases[ligneE][colonneE]=5;
+		}else if (ligneE-newX==-1){
+			//moveDown
+			cases[ligneE][colonneE]=0;
+			ligneE+=1;
+			cases[ligneE][colonneE]=5;
+		}else if (colonneE-newY==1){
+			//moveLeft
+			cases[ligneE][colonneE]=0;
+			colonneE-=1;
+			cases[ligneE][colonneE]=5;
+		}else if (colonneE-newY==-1){
+			//moveRight
+			cases[ligneE][colonneE]=0;
+			colonneE+=1;
+			cases[ligneE][colonneE]=5;
+		}
+		update();
+	}
+	//The bad guy try to kill the princess
+	function autoMoveEP() {
+		var path = pathFinder(ligneE, colonneE, ligneP, colonneP),
+			tile;
+		path.shift();
+		tile = path.shift();
+		//to move the Ennemy and avoid the hero
+		if(tile) {
+			if (tile[0]!=ligneH || tile[1]!=colonneH) {
+				moveE(tile[0],tile[1]);
+			}
+			if (tile[0]==ligneP && tile[1]==colonneP) {
+				lose();
+			}
+		}
+	}
+	//The bad guy try to kill the hero
+	function autoMoveEH() {
+		var path = pathFinder(ligneE, colonneE, ligneH, colonneH),
+			tile;
+		path.shift();
+		tile = path.shift();
+		//to move the Ennemy and avoid the princess
+		if(tile) {
+			if (tile[0]!=ligneP || tile[1]!=colonneP) {
+				moveE(tile[0],tile[1]);
+			}
+			if (tile[0]==ligneH && tile[1]==colonneH) {
+				lose();
+			}
+		}
+	}
+		
+	
 	run();
-	testPath();
 
 
 })();
