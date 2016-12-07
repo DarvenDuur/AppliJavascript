@@ -1,5 +1,5 @@
 (function(){
-	var taille = 10,
+	var taille = 15,
 		taillePx = 600, //taille du tableau en px
 		points,
 		maxTime = 30, // max time in seconds
@@ -122,7 +122,7 @@
 		}
 		
 	//returns a list of coordonates from start to end, avoiding obstacles, and if precised, the hero, and the princess
-	function pathFinder(xStart,yStart,xEnd,yEnd) {
+	function pathFinder(xStart,yStart,xEnd,yEnd,xAvoid,yAvoid) {
 		var acessibleTiles = new Array(), //true si traitée, false si pas traitée, Array([coordonnées])
 			path = false,
 			quickCoor = [[1,0],[-1,0],[0,1],[0,-1]],
@@ -131,6 +131,8 @@
 			toSpreadTiles = new Array(),
 			tile;
 			
+		if (!xAvoid || !yAvoid) {xAvoid = -1; yAvoid = -1;}
+		
 		//initialise the array representing the accessible tiles for the hero
 		for (var i = 0; i < taille; i++) {
 			acessibleTiles[i]=new Array();
@@ -152,8 +154,8 @@
 			for (var coor = 0; coor < 4; coor++) {
 				newCaseI=tile[0]+quickCoor[coor][0];
 				newCaseJ=tile[1]+quickCoor[coor][1];
-				//if the tile is in the board
-				if ((newCaseI<taille && newCaseI>=0) && (newCaseJ<taille && newCaseJ>=0)){
+				//if the tile is in the board and not to avoid
+				if ((newCaseI<taille && newCaseI>=0) && (newCaseJ<taille && newCaseJ>=0) && (newCaseI!=xAvoid || newCaseI!=yAvoid)){
 					//if the tile is not occupied by an obstacle and not already tested
 					if(!acessibleTiles[newCaseI][newCaseJ] && cases[newCaseI][newCaseJ] != 4) {
 						acessibleTiles[newCaseI][newCaseJ] = acessibleTiles[tile[0]][tile[1]].slice(); // copy the path to the tile in the tile
@@ -293,7 +295,14 @@
 				case 39: moveRight(); break;
 				case 40: moveDown();
 			}
-			if (targetPrincess) {autoMoveEP();} else {autoMoveEH();}
+			if (ligneH==ligneE && colonneE==colonneH) { //the hero meets the ennemy by itself
+				lose();
+				cases[ligneH][colonneH] = 5;
+			} else if (targetPrincess) {
+				autoMoveEP();
+			} else {
+				autoMoveEH();
+			}
 			
 			update();
 		}
@@ -344,13 +353,11 @@
 		time = maxTime*10;
 		timer = setInterval(updateTimer, 100);
 	}
-	
 	function showTimer(){
 		var HTMLtimer = document.getElementById("timer");
 
 		HTMLtimer.innerHTML = "Il vous reste : " + (time/10).toFixed(1) + " secondes";
 	}
-	
 	function updateTimer(){
 		time -= 1;
 		showTimer();
@@ -392,6 +399,7 @@
 			tile;
 			
 		if (canPlay) {
+			if (path.length>0) {
 			path.shift();
 			tile = path.shift();
 			switch (ligneH-tile[0]){
@@ -411,14 +419,24 @@
 							break;
 					}
 					break;
+				}
 			}
-			if (targetPrincess) {autoMoveEP();} else {autoMoveEH();}
+			if (ligneH==ligneE && colonneE==colonneH) { //the hero meets the ennemy by itself
+				lose();
+				cases[ligneH][colonneH] = 5;
+			} else if (targetPrincess) {
+				autoMoveEP();
+			} else {
+				autoMoveEH();
+			}
 		}
 		update();
 	}
 	
 	
 	function moveE(newX, newY) {
+		cases[ligneE][colonneE]=0;
+		cases[ligneH][colonneH]=1;
 		if (ligneE-newX==1) {
 			//moveUp
 			cases[ligneE][colonneE]=0;
@@ -426,34 +444,28 @@
 			cases[ligneE][colonneE]=5;
 		}else if (ligneE-newX==-1){
 			//moveDown
-			cases[ligneE][colonneE]=0;
 			ligneE+=1;
 			cases[ligneE][colonneE]=5;
 		}else if (colonneE-newY==1){
 			//moveLeft
-			cases[ligneE][colonneE]=0;
 			colonneE-=1;
 			cases[ligneE][colonneE]=5;
-		}else if (colonneE-newY==-1){
+		}else{
 			//moveRight
-			cases[ligneE][colonneE]=0;
 			colonneE+=1;
 			cases[ligneE][colonneE]=5;
 		}
-		cases[ligneH][colonneH]=1;
 		update();
 	}
 	//The bad guy try to kill the princess
 	function autoMoveEP() {
-		var path = pathFinder(ligneE, colonneE, ligneP, colonneP),
+		var path = pathFinder(ligneE, colonneE, ligneP, colonneP, ligneH, colonneH),
 			tile;
 		if(path.length>0) {
 			path.shift();
 			tile = path.shift();
 			//to move the Ennemy and avoid the hero
-			if (tile[0]!=ligneH || tile[1]!=colonneH) {
-				moveE(tile[0],tile[1]);
-			}
+			moveE(tile[0],tile[1]);
 			if (tile[0]==ligneP && tile[1]==colonneP) {
 				lose();
 			}
@@ -461,16 +473,14 @@
 	}
 	//The bad guy try to kill the hero
 	function autoMoveEH() {
-		var path = pathFinder(ligneE, colonneE, ligneH, colonneH),
+		var path = pathFinder(ligneE, colonneE, ligneH, colonneH, ligneP, colonneP),
 			tile;
 		if(path.length>0) {
 			path.shift();
 			tile = path.shift();
 			//to move the Ennemy and avoid the princess
-			if (tile[0]!=ligneP || tile[1]!=colonneP) {
-				moveE(tile[0],tile[1]);
-			}
-			if (tile[0]==ligneH && tile[1]==colonneH) {
+			moveE(tile[0],tile[1]);
+			if ((tile[0]==ligneH && tile[1]==colonneH) || (ligneH==ligneE && colonneE==colonneH)){
 				lose();
 			}
 		}
@@ -478,6 +488,6 @@
 		
 	
 	run();
-	//setInterval(autoMove, 1000); //uncoment to let the pc play at your place
+	setInterval(autoMove, 500); //uncomment to let the PC play at your place
 
 })();
