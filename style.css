@@ -19,7 +19,7 @@ h1 {
 
 #plateau .ligne {
 	display: block;
-	background: green;
+	/*background: green;*/
 	width: auto;
 }
 

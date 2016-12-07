@@ -1,19 +1,19 @@
 (function(){
-	var taille = 15,
+	var taille = 15, //largeur du plateau (carré)
 		taillePx = 600, //taille du tableau en px
 		points,
 		maxTime = 30, // max time in seconds
 		pointBonnus = 50, // points added on bonnus
-		bonnusRate = 0.1,
-		obstacleRate = 0.3,
+		bonnusRate = 0.1, // in [0;1], rate at wich bonnus will appear
+		obstacleRate = 0.3, // in [0;1], rate at wich obstacles will appear
 		canPlay = true,
-		targetPrincess = false, //if true will try to kill the princess, else will try to kill the hero
+		targetPrincess = true, //if true will try to kill the princess, else will try to kill the hero
 		cases=new Array(),//valeur va etre 0 pour une case vide, 1 pour un heros, 2 pour une princesse, 3 pour un bonus, 4 pour un obstacle, 5 pour l'ennemi
 		ligneH, colonneH, //hero
 		ligneP, colonneP, //princesse
 		ligneE, colonneE; //ennemi
 	
-		//clear table and refill it
+	//clear table and refill it
 	function resetCases(){
 			canPlay = true;
 			for (var i = 0; i < taille; i++) {
@@ -24,8 +24,7 @@
 			}
 			init();
 		}
-
-		//initialise all parameters
+	//initialise all parameters
 	function init(){	
 			//Initialisation du texte
 			setMessage("Sauvez la princesse!","Vous devez sauver la princesse avant la fin du temps imparti.");
@@ -71,8 +70,7 @@
 			}
 			if (!isWinable()) {resetCases();} //si on ne peut pas gagner
 		}
-
-		//determines if the board allows win (hero can access the princess)
+	//determines if the board allows win (hero can access the princess)
 	function isWinable(){
 			var acessibleTiles = new Array(),
 				accessible = false,
@@ -174,9 +172,9 @@
 		return path;
 	}
 		
-		/** creates HTML Node
-		 * Returns the html pseudo-table corresponding to the current Plateau state
-		 */
+	/** creates HTML Node
+	 * Returns the html pseudo-table corresponding to the current Plateau state
+	 */
 	function toHtmlNode() {
 			var table,
 				line,
@@ -235,11 +233,13 @@
 			return table;
 		}
 
+	//update display
 	function update() {
 			plateau=document.getElementById("plateau");
 			plateau.parentNode.replaceChild(toHtmlNode(), plateau);
 		}
 
+	//movement module
 	function mvmtEffect(ligne, colonne){
 			if(cases[ligne][colonne] == 2){
 				win();
@@ -248,7 +248,6 @@
 				bonnus();
 			}
 		}
-
 	function moveLeft(){
 			if(colonneH > 0 && cases[ligneH][colonneH-1] != 4){
 				mvmtEffect(ligneH, colonneH-1);
@@ -257,7 +256,6 @@
 				colonneH -= 1;
 			}
 		}
-
 	function moveUp() {
 			if(ligneH > 0 && cases[ligneH-1][colonneH] != 4){
 				mvmtEffect(ligneH-1, colonneH);
@@ -266,7 +264,6 @@
 				ligneH -= 1;
 			}
 		}
-
 	function moveRight() {
 			if(colonneH < taille-1 && cases[ligneH][colonneH+1] != 4){
 				mvmtEffect(ligneH, colonneH+1);
@@ -275,7 +272,6 @@
 				colonneH += 1;
 			}
 		}
-
 	function moveDown() {
 		if(ligneH < taille-1 && cases[ligneH+1][colonneH] != 4){
 			mvmtEffect(ligneH+1, colonneH);
@@ -284,7 +280,6 @@
 			ligneH += 1;
 		}
 	}
-	
 	//invoked on keypress
 	function move(event){
 		event.preventDefault();
@@ -323,7 +318,6 @@
 
 		HTMLtimer.innerHTML = "Score : " + points + " points";
 	}
-	
 	function bonnus() {
 		points += pointBonnus;
 		showPoints();
@@ -334,14 +328,12 @@
 		resetCases();
 		update();
 	}
-	
 	function addButton() {
 		var resetButton = document.createElement("BUTTON");
 		resetButton.addEventListener("click",reinit);
 		resetButton.innerHTML = "Click to reset";
 		document.getElementById("interface").appendChild(resetButton);
 	}
-	
 	function addKeyboardEvent() {
 		document.addEventListener("keydown",move);
 	}
@@ -389,11 +381,7 @@
 		freeze();
 	}
 	
-	//display one of the fastest path to the princess
-	function testPath() {
-		setInterval(autoMove, 1000);
-	}
-	
+	//make the hero move automaticaly	
 	function autoMove() {
 		var path = pathFinder(ligneH, colonneH, ligneP, colonneP),
 			tile;
@@ -433,7 +421,7 @@
 		update();
 	}
 	
-	
+	//move the ennemy
 	function moveE(newX, newY) {
 		cases[ligneE][colonneE]=0;
 		cases[ligneH][colonneH]=1;
