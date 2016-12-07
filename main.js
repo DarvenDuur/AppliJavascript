@@ -390,25 +390,29 @@
 	function autoMove() {
 		var path = pathFinder(ligneH, colonneH, ligneP, colonneP),
 			tile;
-		path.shift();
-		tile = path.shift();
-		switch (ligneH-tile[0]){
-			case -1:
-				moveDown();
-				break;
-			case 1:
-				moveUp();
-				break;
-			default:
-				switch (colonneH-tile[1]){
-					case -1:
-						moveRight();
-						break;
-					case 1:
-						moveLeft();
-						break;
-				}
-				break;
+			
+		if (canPlay) {
+			path.shift();
+			tile = path.shift();
+			switch (ligneH-tile[0]){
+				case -1:
+					moveDown();
+					break;
+				case 1:
+					moveUp();
+					break;
+				default:
+					switch (colonneH-tile[1]){
+						case -1:
+							moveRight();
+							break;
+						case 1:
+							moveLeft();
+							break;
+					}
+					break;
+			}
+			if (targetPrincess) {autoMoveEP();} else {autoMoveEH();}
 		}
 		update();
 	}
@@ -436,16 +440,17 @@
 			colonneE+=1;
 			cases[ligneE][colonneE]=5;
 		}
+		cases[ligneH][colonneH]=1;
 		update();
 	}
 	//The bad guy try to kill the princess
 	function autoMoveEP() {
 		var path = pathFinder(ligneE, colonneE, ligneP, colonneP),
 			tile;
-		path.shift();
-		tile = path.shift();
-		//to move the Ennemy and avoid the hero
-		if(tile) {
+		if(path.length>0) {
+			path.shift();
+			tile = path.shift();
+			//to move the Ennemy and avoid the hero
 			if (tile[0]!=ligneH || tile[1]!=colonneH) {
 				moveE(tile[0],tile[1]);
 			}
@@ -458,10 +463,10 @@
 	function autoMoveEH() {
 		var path = pathFinder(ligneE, colonneE, ligneH, colonneH),
 			tile;
-		path.shift();
-		tile = path.shift();
-		//to move the Ennemy and avoid the princess
-		if(tile) {
+		if(path.length>0) {
+			path.shift();
+			tile = path.shift();
+			//to move the Ennemy and avoid the princess
 			if (tile[0]!=ligneP || tile[1]!=colonneP) {
 				moveE(tile[0],tile[1]);
 			}
@@ -473,6 +478,6 @@
 		
 	
 	run();
-
+	//setInterval(autoMove, 1000); //uncoment to let the pc play at your place
 
 })();
