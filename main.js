@@ -381,7 +381,7 @@
 		freeze();
 	}
 	
-	//make the hero move automaticaly	
+	//make the hero move automaticaly (bug: sometimes the hero or the ennemy skips a move)
 	function autoMove() {
 		var path = pathFinder(ligneH, colonneH, ligneP, colonneP),
 			tile;
@@ -476,6 +476,6 @@
 		
 	
 	run();
-	setInterval(autoMove, 500); //uncomment to let the PC play at your place
+	//setInterval(autoMove, 500); //uncomment to let the PC play in your place
 
 })();
